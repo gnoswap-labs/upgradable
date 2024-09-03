@@ -7,18 +7,18 @@ import (
 	token "gno.land/r/demo/token"
 )
 
-const adminAddress = "gno.land/r/demo/admin" 
+const adminAddressPath = "gno.land/r/demo/admin" 
 
-var currentLogicRealm = "gno.land/r/demo/logic/v1"
+var currentLogicRealmPath = "gno.land/r/demo/logic/v1"
 
 func assertAdminAddress() {
-	if std.PrevRealm() != adminAddress {
+	if std.PrevRealm().PkgPath() != adminAddressPath {
 		panic("Admin address mismatch")
 	}
 }
 
 func assertLogicRealm() {
-	if std.PrevRealm() != currentLogicRealm {
+	if std.PrevRealm().PkgPath() != currentLogicRealmPath {
 		panic("Logic realm mismatch")
 	}
 }
@@ -41,7 +41,7 @@ func assertMigrationState(expected MigrationState) {
 func ReplaceLogicRealm(newLogicRealm string) {
 	assertAdminAddress()
 	assertMigrationState(MigrationStateStable)
-	currentLogicRealm = newLogicRealm
+	currentLogicRealmPath = newLogicRealm
 	state.MigrateLogicRealm(newLogicRealm)
 	token.MigrateLogicRealm(newLogicRealm)
 	migrationState = MigrationStateReplaced

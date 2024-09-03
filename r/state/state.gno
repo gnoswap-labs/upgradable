@@ -8,13 +8,13 @@ const entryRealm = "gno.land/r/demo/entry"
 var currentLogicRealm = "gno.land/r/demo/logic/v1"
 
 func assertEntryRealm() {
-	if std.PrevRealm() != entryRealm {
+	if std.PrevRealm().PkgPath() != entryRealm {
 		panic("Entry realm mismatch")
 	}
 }
 
 func assertLogicRealm() {
-	if std.PrevRealm() != currentLogicRealm {
+	if std.PrevRealm().PkgPath() != currentLogicRealm {
 		panic("Logic realm mismatch")
 	}
 }
