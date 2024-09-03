@@ -37,4 +37,21 @@ func TestContractUpgrade(t *testing.T) {
 			t.Errorf("expected version to roll back, got %s", finalVersion)
 		}
 	})
+
+	t.Run("swap functionality", func(t *testing.T) {
+		// AddLiquidity(1000, 1000)
+
+		// initReserve0, initReserve1 := logic_v2.GetReserves()
+
+		// amountOut := Swap("foo", 100)
+
+		// if amountOut == 0 {
+		// 	t.Errorf("swap failed, expected non-zero amount")
+		// }
+
+		// newReserve0, newReserve1 := logic_v2.GetReserves()
+		// if newReserve0 <= initialReserve0 || newReserve1 >= initialReserve1 {
+		// 	t.Errorf("Reserves not updated correctly after swap")
+		// }
+	})
 }
