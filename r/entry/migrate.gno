@@ -59,3 +59,21 @@ func MigrateLogicRealm(
 	removeLiquidity = _removeLiquidity
 	migrationState = MigrationStateStable
 }
+
+func ConfirmMigration() {
+	assertAdminAddress()
+	assertMigrationState(MigrationStateReplaced)
+
+	migrationState = MigrationStateStable
+	previousLogicRealmPath = ""
+}
+
+func RollbackMigration() {
+	assertAdminAddress()
+	assertMigrationState(MigrationStateReplaced)
+
+	currentLogicRealmPath = previousLogicRealmPath
+	previousLogicRealmPath = ""
+
+	migrationState = MigrationStateStable
+}

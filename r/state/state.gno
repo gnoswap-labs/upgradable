@@ -2,6 +2,7 @@ package state
 
 import (
 	"std"
+	"strings"
 )
 
 const entryRealm = "gno.land/r/demo/entry"
@@ -22,6 +23,16 @@ func assertLogicRealm() {
 func MigrateLogicRealm(newLogicRealm string) {
 	assertEntryRealm()
 	currentLogicRealm = newLogicRealm
+}
+
+func GetCurrentLogicRealm() string {
+	assertEntryRealm()
+	return currentLogicRealm
+}
+
+func GetCurrentLogicVersion() string {
+	assertEntryRealm()
+	return strings.TrimPrefix(currentLogicRealm, "gno.land/r/demo/logic/")
 }
 
 var balanceOf = map[string]uint64{}
