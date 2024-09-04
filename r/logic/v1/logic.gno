@@ -1,4 +1,4 @@
-package logic
+package v1
 
 import (
 	"std"
@@ -32,7 +32,7 @@ func update(_reserve0 uint64, _reserve1 uint64) {
 const entryRealm = "gno.land/r/demo/entry"
 
 func assertEntryRealm() {
-	if std.PrevRealm() != entryRealm {
+	if std.PrevRealm().PkgPath() != entryRealm {
 		panic("Entry realm mismatch")
 	}
 }
@@ -44,9 +44,9 @@ func Swap(prev string, tokenIn string, amountIn uint64) (amountOut uint64) {
 
 func AddLiquidity(prev string, amount0 uint64, amount1 uint64) (shareAmount uint64) {
 	assertEntryRealm()
-	
-	token.TransferFrom(token0, prev, std.CurrentRealm(), amount0)
-	token.TransferFrom(token1, prev, std.CurrentRealm(), amount1)
+
+	token.TransferFrom(token0, prev, std.CurrentRealm().PkgPath(), amount0)
+	token.TransferFrom(token1, prev, std.CurrentRealm().PkgPath(), amount1)
 
 	if *totalSupply == 0 {
 		shareAmount = sqrt(amount0 * amount1)
@@ -56,7 +56,7 @@ func AddLiquidity(prev string, amount0 uint64, amount1 uint64) (shareAmount uint
 
 	mint(prev, shareAmount)
 
-	update(token.BalanceOf(token0, std.CurrentRealm()), token.BalanceOf(token1, std.CurrentRealm()))
+	update(token.BalanceOf(token0, std.CurrentRealm().PkgPath()), token.BalanceOf(token1, std.CurrentRealm().PkgPath()))
 
 	return shareAmount
 }
@@ -77,6 +77,8 @@ func sqrt(y uint64) (z uint64) {
 	} else if y != 0 {
 		z = 1
 	}
+
+	return z
 }
 
 func min(x uint64, y uint64) uint64 {

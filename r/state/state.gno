@@ -1,6 +1,7 @@
 package state
 
 import (
+	"fmt"
 	"std"
 	"strings"
 )
@@ -10,23 +11,24 @@ var currentLogicRealm = "gno.land/r/demo/logic/v1"
 
 func assertEntryRealm() {
 	if std.PrevRealm().PkgPath() != entryRealm {
-		panic("Entry realm mismatch")
+		panic(fmt.Sprintf("Entry realm mismatch. Expected: %s, Got: %s", entryRealm, std.PrevRealm().PkgPath()))
 	}
 }
 
 func assertLogicRealm() {
-	if std.PrevRealm().PkgPath() != currentLogicRealm {
-		panic("Logic realm mismatch")
+	prevRealm := std.PrevRealm().PkgPath()
+	if prevRealm != currentLogicRealm {
+		panic(fmt.Sprintf("Logic realm mismatch. Expected: %s, Got: %s", currentLogicRealm, prevRealm))
 	}
 }
 
 func MigrateLogicRealm(newLogicRealm string) {
 	assertEntryRealm()
 	currentLogicRealm = newLogicRealm
+	fmt.Printf("Logic realm migrated to: %s\n", newLogicRealm)
 }
 
 func GetCurrentLogicRealm() string {
-	assertEntryRealm()
 	return currentLogicRealm
 }
 

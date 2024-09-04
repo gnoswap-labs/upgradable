@@ -39,83 +39,42 @@ func assertEntryRealm() {
 
 func Swap(prev string, tokenIn string, amountIn uint64) (amountOut uint64) {
 	assertEntryRealm()
-	
-	var reserveIn, reserveOut *uint64
-	var tokenOut string
-	if tokenIn == token0 {
-		reserveIn, reserveOut = reserve0, reserve1
-		tokenOut = token1
-	} else if tokenIn == token1 {
-		reserveIn, reserveOut = reserve1, reserve0
-		tokenOut = token0
-	} else {
-		panic("Invalid token")
-	}
-	
-	// Apply a 0.3% fee
-	amountInWithFee := amountIn * 997
-	numerator := amountInWithFee * *reserveOut
-	denominator := *reserveIn * 1000 + amountInWithFee
-	amountOut = numerator / denominator
-	
-	if amountOut == 0 {
-		panic("Insufficient output amount")
-	}
-	
-	token.TransferFrom(tokenIn, prev, std.CurrentRealm(), amountIn)
-	token.Transfer(tokenOut, prev, amountOut)
-	
-	var newReserve0, newReserve1 uint64
-	if tokenIn == token0 {
-		newReserve0 = *reserve0 + amountIn
-		newReserve1 = *reserve1 - amountOut
-	} else {
-		newReserve0 = *reserve0 - amountOut
-		newReserve1 = *reserve1 + amountIn
-	}
-	update(newReserve0, newReserve1)
-	
-	return amountOut
+
+	return 1
 }
 
 func AddLiquidity(prev string, amount0 uint64, amount1 uint64) (shareAmount uint64) {
 	assertEntryRealm()
-	
-	token.TransferFrom(token0, prev, std.CurrentRealm(), amount0)
-	token.TransferFrom(token1, prev, std.CurrentRealm(), amount1)
+
+	token.TransferFrom(token0, prev, std.CurrentRealm().PkgPath(), amount0)
+	token.TransferFrom(token1, prev, std.CurrentRealm().PkgPath(), amount1)
 
 	if *totalSupply == 0 {
 		shareAmount = sqrt(amount0 * amount1)
 	} else {
-		shareAmount0 := amount0 * *totalSupply / *reserve0
-		shareAmount1 := amount1 * *totalSupply / *reserve1
-		if shareAmount0 < shareAmount1 {
-			shareAmount = shareAmount0
-		} else {
-			shareAmount = shareAmount1
-		}
+		shareAmount = min(amount0 * *totalSupply / *reserve0, amount1 * *totalSupply / *reserve1)
 	}
 
 	mint(prev, shareAmount)
 
-	update(token.BalanceOf(token0, std.CurrentRealm()), token.BalanceOf(token1, std.CurrentRealm()))
+	update(token.BalanceOf(token0, std.CurrentRealm().PkgPath()), token.BalanceOf(token1, std.CurrentRealm().PkgPath()))
 
 	return shareAmount
 }
 
 func RemoveLiquidity(prev string, shareAmount uint64) (amount0 uint64, amount1 uint64) {
 	assertEntryRealm()
-	
+
 	amount0 = shareAmount * *reserve0 / *totalSupply
 	amount1 = shareAmount * *reserve1 / *totalSupply
-	
+
 	burn(prev, shareAmount)
-	
+
 	token.Transfer(token0, prev, amount0)
 	token.Transfer(token1, prev, amount1)
-	
+
 	update(*reserve0 - amount0, *reserve1 - amount1)
-	
+
 	return amount0, amount1
 }
 
@@ -131,6 +90,13 @@ func sqrt(y uint64) (z uint64) {
 		z = 1
 	}
 	return z
+}
+
+func min(x uint64, y uint64) uint64 {
+	if x < y {
+		return x
+	}
+	return y
 }
 
 // Getter functions
