@@ -4,12 +4,12 @@ import (
 	"std"
 )
 
-var logic Logic = nil
+var ReadCounter func() uint64 = nil
+var UpdateCounter func() = nil
+var DebugPrevRealm func() string = nil
 
-func ReadCounter() uint64 {
-	return logic.ReadCounter()
-}
+// ----------------------------------------------------------------------------
 
-func UpdateCounter() {
-	logic.UpdateCounter()
+func DebugAdminPrevRealm() string {
+	return std.PrevRealm().Addr().String()
 }

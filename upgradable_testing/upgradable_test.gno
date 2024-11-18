@@ -20,7 +20,7 @@ func TestPackage(t *testing.T) {
 	std.TestSetOrigCaller(alice) // XXX: should not need this
 
 	store.Init()
-	
+
 	v1.Init()
 	urequire.Equal(t, admin.ReadCounter(), uint64(0))
 	admin.UpdateCounter()
@@ -30,4 +30,6 @@ func TestPackage(t *testing.T) {
 	urequire.Equal(t, admin.ReadCounter(), uint64(1))
 	admin.UpdateCounter()
 	urequire.Equal(t, admin.ReadCounter(), uint64(3))
+
+	urequire.Equal(t, admin.DebugPrevRealm(), admin.DebugAdminPrevRealm())
 }

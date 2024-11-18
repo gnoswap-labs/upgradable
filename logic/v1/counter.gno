@@ -23,3 +23,7 @@ func (l *logic) ReadCounter() uint64 {
 func (l *logic) UpdateCounter() {
 	store.SetCounter(store.GetCounter() + 1)
 }
+
+func (l *logic) DebugPrevRealm() string {
+	return std.PrevRealm().Addr().String()
+}
